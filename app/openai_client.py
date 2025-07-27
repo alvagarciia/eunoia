@@ -1,47 +1,89 @@
-import openai
-from agents import Agent, Runner
-from openai.types.responses import ResponseTextDeltaEvent
+# langchain_psych_agent.py
+
 import os
-import asyncio
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+from langchain_openai import ChatOpenAI
+from langchain.agents import Tool, initialize_agent, AgentExecutor
+from langchain.memory import ConversationSummaryBufferMemory
+from langchain.prompts import PromptTemplate
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+import requests
 
-# Agent Instructions
-systemInstructions = "You are an expert psychologist. Help users unpack thoughts and emotions using grounded, introspective reasoning and evidence-based psychology. Support the user positively and be curious to help the user self-reflect. If user doesn't add details, ask for more context, one or two questions at a time. Reply as if you are talking to someone, no markdown."
+# Set OpenAI API key
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+# Set up LangSmith (for tracing)
+os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
+os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
+os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
 
-# Set up our agent
-agent = Agent(
-    name="Psychologist",
-    instructions=systemInstructions,
-    model="gpt-4o"
+# System-level instructions for the agent
+system_instructions = """
+You are a psychology-inspired assistant who helps users explore and understand emotional or behavioral concerns. Guide them through a multi-step journey:
+1. Invite them to share a concern,
+2. Ask follow-up questions,
+3. Form hypotheses about underlying causes,
+4. Validate or refine ideas,
+5. Help reflect on learnings,
+6. Offer a concise summary if requested.
+Be gentle, nonjudgmental, curious, and concise—avoid long monologues.
+"""
+template = """
+    In less than 100 words, answer the request delimited by triple backticks only if it's about psychology. Otherwise, remind the user this is a psychology assistant:
+    ``` {input} ``` 
+    """
+
+# Simple web search tool (replace with real API)
+def web_search(query: str) -> str:
+    # Example: integrate with SerpAPI or Browse or PubMed
+    response = requests.get("https://api.example.com/search", params={"q": query})
+    return response.json().get("snippet", "")
+# Dummy tool to absorb direct replies as structured function calls
+def echo_tool(input: str) -> str:
+    return input
+
+
+tools = [
+    Tool(
+        name="psychology_web_search",
+        func=web_search,
+        description="Use this if you need external information about psychology topics."
+    ),
+    Tool(
+        name="direct_response",
+        func=echo_tool,
+        description="Use this when no external tool is needed and you want to respond directly to the user"
+    ),
+]
+
+# Use GPT-4 with controlled temperature and concise responses
+llm = ChatOpenAI(model="gpt-4o", temperature=0.5)
+
+# Memory: combine summary + buffer of past few exchanges
+memory = ConversationSummaryBufferMemory(
+    llm=llm,
+    memory_key="chat_history",
+    max_token_limit=800,
+    return_messages=True
 )
 
-# Function called by routes.py
-def run_agent(user_input):
-    return asyncio.run(_run_agent_async(user_input))
+# Prompt template: include system instructions, history, and new input
+prompt = PromptTemplate(
+    input_variables=["input", "chat_history"],
+    template=system_instructions + template
+)
 
-# Helper function to run_agent
-async def _run_agent_async(user_input):
-    response = Runner.run_streamed(
-        starting_agent=agent,
-        input=f"""
-        In less than 100 words, answer the request delimited by triple backticks only if it's about psychology. Otherwise, remind the user this is a psychology assistant:
-        ``` {user_input} ``` 
-        """
-    )
-
-    final_output = ""
-    async for event in response.stream_events():
-        if event.type == "raw_response_event" and \
-        isinstance(event.data, ResponseTextDeltaEvent):
-            final_output += event.data.delta
-
-    return final_output
+# Agent initialization using OpenAI-functions agent
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent_type="openai-functions",  # Avoids REACT-style parsing issues
+    memory=memory,
+    verbose=False
+)
 
 
-def get_openai_response(user_input):
-    response = openai.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "user", "content": user_input}]
-    )
-    return response.choices[0].message.content.strip()
+# Function to run the agent and return full response
+def run_agent(user_input: str) -> str:
+    response = agent.invoke({"input": user_input})
+    return response['output']

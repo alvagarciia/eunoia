@@ -17,6 +17,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    box.innerHTML += `<p><b>Assistant:</b> ${data.reply}</p>`;
-  box.scrollTop = box.scrollHeight;
+    const formattedReply = data.reply.replace(/\n/g, '<br>');
+    box.innerHTML += `<p><b>Assistant:</b> ${formattedReply}</p>`;
+    box.scrollTop = box.scrollHeight;
 });

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from .openai_client import get_openai_response, run_agent
+from .openai_client import run_agent
 
 bp = Blueprint('main', __name__)
 
