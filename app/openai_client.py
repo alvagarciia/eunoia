@@ -16,10 +16,11 @@ agent = Agent(
     model="gpt-4o"
 )
 
-
+# Function called by routes.py
 def run_agent(user_input):
     return asyncio.run(_run_agent_async(user_input))
 
+# Helper function to run_agent
 async def _run_agent_async(user_input):
     response = Runner.run_streamed(
         starting_agent=agent,
@@ -34,9 +35,9 @@ async def _run_agent_async(user_input):
         if event.type == "raw_response_event" and \
         isinstance(event.data, ResponseTextDeltaEvent):
             final_output += event.data.delta
-            # print(event.data.delta, end="", flush=True)
 
     return final_output
+
 
 def get_openai_response(user_input):
     response = openai.chat.completions.create(
