@@ -186,16 +186,22 @@ body {
     border-radius: 25px;
     padding: 15px;
     box-shadow: 0 8px 32px rgba(61, 90, 128, 0.1);
+    margin-top: 25px; /* Extra spacing from chat box */
 }
 
 .input-container {
     display: flex;
     gap: 15px;
-    align-items: center;
+    align-items: flex-end; /* Align button to bottom of textarea */
+}
+
+.textarea-wrapper {
+    flex: 1;
+    position: relative;
 }
 
 #user-input {
-    flex: 1;
+    width: 100%;
     border: 2px solid #dceefc;
     border-radius: 20px;
     padding: 15px 20px;
@@ -205,6 +211,12 @@ body {
     background: #fefcf8;
     transition: all 0.3s ease;
     outline: none;
+    resize: none; /* Disable manual resize */
+    line-height: 1.5;
+    min-height: 52px; /* Base height for 1 line */
+    max-height: 130px; /* Max height for ~4 lines */
+    overflow-y: hidden; /* Start with no scroll */
+    box-sizing: border-box;
 }
 
 #user-input:focus {
@@ -218,6 +230,11 @@ body {
     opacity: 0.7;
 }
 
+/* When textarea reaches max height, enable scrolling */
+#user-input.scrollable {
+    overflow-y: auto;
+}
+
 .send-button {
     background: linear-gradient(145deg, #a8dadc, #9bc5c3);
     border: none;
@@ -229,6 +246,10 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(168, 218, 220, 0.3);
+    min-height: 52px; /* Match textarea base height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .send-button:hover {
@@ -315,6 +336,11 @@ body {
         padding: 12px 16px;
     }
     
+    .chat-form {
+        margin-top: 20px;
+        padding: 12px;
+    }
+    
     .input-container {
         gap: 10px;
     }
@@ -322,11 +348,14 @@ body {
     #user-input {
         padding: 12px 16px;
         font-size: 0.95rem;
+        min-height: 48px;
+        max-height: 120px; /* Slightly smaller on mobile */
     }
     
     .send-button {
         padding: 12px 20px;
         font-size: 0.9rem;
+        min-height: 48px;
     }
 }
 
@@ -344,5 +373,27 @@ body {
         max-width: 95%;
         padding: 10px 14px;
         font-size: 0.9rem;
+    }
+    
+    .chat-form {
+        margin-top: 15px;
+        padding: 10px;
+    }
+    
+    .input-container {
+        gap: 8px;
+    }
+    
+    #user-input {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        min-height: 44px;
+        max-height: 110px;
+    }
+    
+    .send-button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        min-height: 44px;
     }
 }
