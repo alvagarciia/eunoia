@@ -166,6 +166,6 @@ pipeline_with_history = RunnableWithMessageHistory(
 def run_agent(user_input: str) -> str:
     response = pipeline_with_history.invoke(
         {"query": get_prompt(user_input)},
-        config={"session_id": "id_129", "llm": llm_sum, "k": 3}
+        config={"session_id": "id_131", "llm": llm_sum, "k": 3}
     )
     return response.content
