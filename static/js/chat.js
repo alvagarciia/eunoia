@@ -4,6 +4,10 @@ const box = document.getElementById("chat-box");
 const box_top = document.querySelector("#top");
 const typingIndicator = document.getElementById("typing-indicator");
 
+function scroll() {
+    box.scrollTop = box.scrollHeight;
+}
+
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -21,12 +25,15 @@ form.addEventListener("submit", async (e) => {
     `;
     box_top.append(userMessage);
     input.value = "";
+    box.scrollTop = box.scrollHeight;
 
     // Show typing indicator
     setTimeout(() => typingIndicator.classList.remove('hidden'), 500);
+    typingIndicator.classList.remove('hidden')
     box.scrollTop = box.scrollHeight;
-
+    
     try {
+
         const res = await fetch("/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -37,7 +44,7 @@ form.addEventListener("submit", async (e) => {
         
         // Hide typing indicator
         typingIndicator.classList.add('hidden');
-        
+
         // Add assistant message with bubble styling
         const formattedReply = data.reply.replace(/\n/g, '<br>');
         const assistantMessage = document.createElement('div');
@@ -48,12 +55,12 @@ form.addEventListener("submit", async (e) => {
                 ${formattedReply}
             </div>
         `;
-        box_top.append(assistantMessage);
+        box_top.append(assistantMessage)
         box.scrollTop = box.scrollHeight;
         
     } catch (error) {
         // Hide typing indicator on error
-        typingIndicator.classList.add('hidden');
+        setTimeout(() => typingIndicator.classList.add('hidden'), 500);
         
         const errorMessage = document.createElement('div');
         errorMessage.className = 'assistant-message';
@@ -63,7 +70,7 @@ form.addEventListener("submit", async (e) => {
                 I'm sorry, I'm having trouble responding right now. Please try again in a moment.
             </div>
         `;
-        box_top.append(errorMessage);
-        box.scrollTop = box.scrollHeight;
+        setTimeout(() => box_top.append(errorMessage), 500);
+        setTimeout(() => scroll(), 500);
     }
 });
