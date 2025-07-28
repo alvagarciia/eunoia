@@ -4,24 +4,11 @@ const box = document.getElementById("chat-box");
 const box_top = document.querySelector("#top");
 const typingIndicator = document.getElementById("typing-indicator");
 
-// Remove welcome message on first interaction
-let isFirstMessage = true;
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const message = input.value;
     if (!message.trim()) return;
-
-    // Remove welcome message on first user input
-    if (isFirstMessage) {
-        const welcomeMsg = box.querySelector('.welcome-message');
-        if (welcomeMsg) {
-            welcomeMsg.style.animation = 'fadeOut 0.3s ease-out forwards';
-            welcomeMsg.remove();
-            // setTimeout(() => welcomeMsg.remove(), 300);
-        }
-        isFirstMessage = false;
-    }
 
     // Add user message with bubble styling
     const userMessage = document.createElement('div');
