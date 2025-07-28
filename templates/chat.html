@@ -2,15 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Psychology Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eunoia - Beautiful Thinking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div id="chat-box"></div>
-    <form id="chat-form">
-        <input type="text" id="user-input" autocomplete="off"/>
-        <button type="submit">Send</button>
-    </form>
+    <div class="container">
+        <header class="app-header">
+            <h1 class="app-title">Eunoia</h1>
+            <p class="app-subtitle">Beautiful thinking, guided</p>
+        </header>
+        
+        <div id="chat-box" class="chat-container">
+            <div class="welcome-message">
+                <p>Welcome to a safe space for exploring your thoughts and emotions. Take a deep breath, and share what's on your mind.</p>
+            </div>
+            <div id="top"></div>
+            <div id="typing-indicator" class="typing-indicator hidden">
+                <div class="typing-bubble">
+                    <span class="typing-name">Noema is thinking</span>
+                    <div class="typing-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <form id="chat-form" class="chat-form">
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Share your thoughts..." autocomplete="off"/>
+                <button type="submit" class="send-button">
+                    <span>Send</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>

@@ -3,9 +3,9 @@
 import os
 
 from langchain_openai import ChatOpenAI
-from langchain.agents import Tool, initialize_agent, AgentExecutor
-from langchain.memory import ConversationBufferMemory, ConversationSummaryBufferMemory
-from langchain.prompts import PromptTemplate
+# from langchain.agents import Tool, initialize_agent, AgentExecutor
+# from langchain.memory import ConversationBufferMemory, ConversationSummaryBufferMemory
+# from langchain.prompts import PromptTemplate
 
 from langchain.prompts import (
     SystemMessagePromptTemplate,
@@ -29,42 +29,21 @@ os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
 
 # System-level instructions for the agent
 system_instructions = """
-You are a psychology-inspired assistant who helps users explore and understand emotional or behavioral concerns. Guide them through a multi-step journey:
-1. Invite them to share a concern,
-2. Ask follow-up questions,
-3. Form hypotheses about underlying causes,
-4. Validate or refine ideas,
-5. Help reflect on learnings,
-6. Offer a concise summary if requested.
-Be gentle, nonjudgmental, curious, and concise—avoid long monologues.
+You are a psychology-guided assistant who helps users deeply understand their emotional or behavioral challenges through introspective dialogue. Your role is to lead users on a structured journey:
+1. Invite them to share something they’re struggling with,
+2. Ask focused follow-ups to understand the situation and their emotional responses,
+3. Gradually form a hypothesis about underlying psychological patterns or beliefs,
+4. Validate or revise your understanding through more questions,
+5. Once you’ve identified a likely cause or dynamic, guide the user to reflect on it,
+6. If the user expresses closure (e.g., 'thank you', 'I feel better'), offer a short summary of insights and ask if they'd like to receive it.
+Throughout, stay gentle, curious, and concise. Prioritize clarity, ask one question at a time, and always move the conversation forward.
 """
 def get_prompt(input):
     return f"""
-    In less than 100 words, answer the request delimited by triple backticks only if it's about psychology. Otherwise, remind the user this is a psychology assistant:
+    In under 100 words, answer the request delimited by triple backticks. Only answer if the topic relates to psychology. Else, remind the user this is a psychology-focused assistant:
     ``` {input} ``` 
     """
 
-# Simple web search tool (replace with real API)
-def web_search(query: str) -> str:
-    # Example: integrate with SerpAPI or Browse or PubMed
-    response = requests.get("https://api.example.com/search", params={"q": query})
-    return response.json().get("snippet", "")
-# Dummy tool to absorb direct replies as structured function calls
-def echo_tool(input: str) -> str:
-    return input
-
-tools = [
-    Tool(
-        name="psychology_web_search",
-        func=web_search,
-        description="Use this if you need external information about psychology topics."
-    ),
-    Tool(
-        name="direct_response",
-        func=echo_tool,
-        description="Use this when no external tool is needed and you want to respond directly to the user"
-    ),
-]
 
 # Use GPT-4 with controlled temperature and concise responses
 llm = ChatOpenAI(model="gpt-4o", temperature=0.5)
@@ -96,6 +75,38 @@ pipeline_with_history = RunnableWithMessageHistory(
     history_messages_key="history"
 )
 
+# Function to run the agent and return full response
+def run_agent(user_input: str) -> str:
+    response = pipeline_with_history.invoke(
+        {"query": get_prompt(user_input)},
+        config={"session_id": "id_124"}
+    )
+    return response.content
+
+
+
+# # Simple web search tool (replace with real API)
+# def web_search(query: str) -> str:
+#     # Example: integrate with SerpAPI or Browse or PubMed
+#     response = requests.get("https://api.example.com/search", params={"q": query})
+#     return response.json().get("snippet", "")
+# # Dummy tool to absorb direct replies as structured function calls
+# def echo_tool(input: str) -> str:
+#     return input
+
+# tools = [
+#     Tool(
+#         name="psychology_web_search",
+#         func=web_search,
+#         description="Use this if you need external information about psychology topics."
+#     ),
+#     Tool(
+#         name="direct_response",
+#         func=echo_tool,
+#         description="Use this when no external tool is needed and you want to respond directly to the user"
+#     ),
+# ]
+
 
 
 # Memory: combine summary + buffer of past few exchanges
@@ -126,13 +137,3 @@ pipeline_with_history = RunnableWithMessageHistory(
 #     memory=memory,
 #     verbose=False
 # )
-
-
-# Function to run the agent and return full response
-def run_agent(user_input: str) -> str:
-    response = pipeline_with_history.invoke(
-        {"query": get_prompt(user_input)},
-        config={"session_id": "id_123"}
-    )
-    # response = agent.invoke({"input": user_input})
-    return response.content
