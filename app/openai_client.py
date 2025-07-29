@@ -163,9 +163,16 @@ pipeline_with_history = RunnableWithMessageHistory(
 )
 
 # Function to run the agent and return full response
-def run_agent(user_input: str) -> str:
+def run_agent(user_input: str, session_id: str) -> str:
     response = pipeline_with_history.invoke(
         {"query": get_prompt(user_input)},
-        config={"session_id": "id_131", "llm": llm_sum, "k": 3}
+        config={
+            "session_id": session_id,
+            "llm": llm_sum,
+            "k": 3,
+            "configurable": {
+                "config_id": session_id  # For LangSmith logging
+            }
+        }
     )
     return response.content

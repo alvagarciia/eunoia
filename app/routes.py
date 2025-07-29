@@ -10,5 +10,11 @@ def home():
 @bp.route("/chat", methods=["POST"])
 def chat():
     user_message = request.json.get("message")
-    reply = run_agent(user_message)
+    session_id = request.json.get("session_id")
+    
+    # Fallback to a default if session_id is missing
+    if not session_id:
+        session_id = "default_session"
+    
+    reply = run_agent(user_message, session_id)
     return jsonify({"reply": reply})

@@ -4,6 +4,10 @@ const box = document.getElementById("chat-box");
 const box_top = document.querySelector("#top");
 const typingIndicator = document.getElementById("typing-indicator");
 
+// Generate unique session ID on page load (resets on refresh)
+const sessionId = crypto.randomUUID();
+console.log("Session ID:", sessionId); // For debugging
+
 function scroll() {
     box.scrollTop = box.scrollHeight;
 }
@@ -71,7 +75,10 @@ form.addEventListener("submit", async (e) => {
         const res = await fetch("/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({ 
+                message: message,
+                session_id: sessionId 
+            }),
         });
 
         const data = await res.json();
