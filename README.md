@@ -75,9 +75,3 @@ Then go to `localhost:5000` in your browser.
 ## 📜 License
 
 This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it with proper attribution.
-
----
-
-## 🙏 Acknowledgments
-
-Thanks to OpenAI, LangChain, and the online dev community for tools and documentation that made this project possible.
