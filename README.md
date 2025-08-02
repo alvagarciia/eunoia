@@ -33,11 +33,10 @@ It does not replace therapy, but offers a warm digital space for introspection.
 ## ✨ Features
 
 - Minimalist, mobile-friendly chat interface
-- Assistant responds as **Noema**, a gentle and curious guide
+- Assistant responds as **Noema**, a professional and curious guide
 - Session-based memory for continuity of thought during chats
-- Automatically resets memory on page reload for privacy
-- Embedded cost-efficient summary system using GPT-3.5
-- Styled interface with relaxing color palette (sky blue + cream tones)
+- Automatically resets memory on page reload
+- Styled interface with relaxing color palette
 
 ---
 
@@ -52,23 +51,6 @@ python run.py
 ```
 
 Then go to `localhost:5000` in your browser.
-
----
-
-## 💡 Future Ideas
-
-- User account system with saved chat summaries
-- Embedding past summaries in a vector DB for improved personalization
-- Enhanced tooling (e.g. web search, emotion classification)
-- Dark/light theme toggle
-
----
-
-## 🔒 Notes on Privacy and Cost
-
-- Each session is private and resets on page reload
-- Memory management uses GPT-3.5 for summaries to keep token costs low
-- Hosted versions should monitor API usage to prevent cost overruns
 
 ---
 
