@@ -124,7 +124,7 @@ To get a local copy up and running follow these simple example steps.
    git clone https://github.com/alvagarciia/eunoia.git
    ```
 3. Create a virtual environment
-   >  (Recommended to avoid dependency conflicts)
+   >  Recommended to avoid dependency conflicts
    ```sh
    python -m venv venv
     source venv/bin/activate    # Mac/Linux
@@ -148,7 +148,7 @@ To get a local copy up and running follow these simple example steps.
    ```sh
    python run.py
    ```
-   Visit http://localhost:5000 in your browser.
+   Visit `localhost:5000` in your browser.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
