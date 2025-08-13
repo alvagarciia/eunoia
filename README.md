@@ -45,7 +45,12 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#demo">Demo</a></li>
+      </ul>
+    </li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -57,7 +62,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Eunoia Showcase](./media/eunoia-demo.gif)
+![Eunoia Showcase](./media/eunoia-show.png)
 
 Eunoia is a psychology-inspired AI assistant designed to guide users through thoughtful self-reflection and emotional understanding. It provides a calm, nonjudgmental space to talk about personal concerns, helping users gain insight through conversation.
 
@@ -157,6 +162,13 @@ Once started, users can visit the app and begin chatting with Noema. No signup r
 Noema will only answer to problems that the user shares and ask questions back so that the user can do introspection. Whenever the user shows signs of being satisfied with the conversation, Noema will offer to write a short summary of the chat.
 
 The prompt engineering made it so that sending more messages and increasing the conversation doesn't increase the cost exponentially. However, inputting longer texts WILL use up more tokens. 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+### Demo
+
+![Eunoia Demo](./media/eunoia-demo.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
